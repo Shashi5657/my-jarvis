@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import FormField from "./FormField";
+import { useRouter } from "next/navigation";
 type FormType = "sign-in" | "sign-up";
 
 const authFormSchema = (type: FormType) => {
@@ -22,6 +23,7 @@ const authFormSchema = (type: FormType) => {
 };
 
 const AuthForm = ({ type }: { type: FormType }) => {
+  const router = useRouter();
   const formSchema = authFormSchema(type);
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -35,14 +37,19 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log("Submitting form...", values);
     try {
       if (type === "sign-up") {
-        console.log("Signup", values);
+        toast.success("Account created successfully. Please sign in");
+        console.log("Pushing to /signin");
+        router.push("/signin");
       } else {
-        console.log("Signin", values);
+        toast.success("Sign in Successful");
+        console.log("Pushing to /");
+        router.push("/");
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error during navigation", error);
       toast.error(`There was an error : ${error}`);
     }
     console.log(values);
