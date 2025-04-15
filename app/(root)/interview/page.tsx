@@ -1,13 +1,25 @@
-import Agent from '@/components/Agent'
-import React from 'react'
+import Agent from "@/components/Agent";
+import { getCurrentUser } from "@/lib/auth.action";
+import React from "react";
 
-const page = () => {
+const page = async () => {
+  const user = await getCurrentUser();
+
+  // Optional: handle missing user gracefully
+  if (!user?.name) {
+    return <p>Unable to load user info. Please sign in again.</p>;
+  }
+
   return (
     <>
-    <h3>Interview Generation</h3>
-    <Agent userName="You" userId="user1" type="generate" />
+      <h3>Interview Generation</h3>
+      <Agent
+        userName={user.name}
+        userId={user.id ?? undefined}
+        type="generate"
+      />
     </>
-  )
-}
+  );
+};
 
-export default page
+export default page;
